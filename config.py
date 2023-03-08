@@ -22,21 +22,23 @@ def config(argv) -> int:
     section = ''
     key=''
     value=''
+    Break='='
 
     try:
-       opts, args = getopt.getopt(argv,"f:s:k:v:",["file=","section=","key=","value=",])
+       opts, args = getopt.getopt(argv,"f:s:k:v:B:",["file=","section=","key=","value=","Break="])
     except getopt.GetoptError:
             print('\nCONFIG.PY\n==============================================================================================\n')
             print('This script modifies configuration text files.  You must specify the file, key, and value.')
             print('The section parameter is optional.\n\n')
             print('Command Format:')
-            print('\tconfig.py -f <file> -s <section - optional> -k <key> -v <value>\n\tconfig.py -h for more information\n\n\tparameters:')
+            print('\tconfig.py -f <file> -s <section - optional> -k <key> -v <value> -B <Break>\n\tconfig.py -h for more information\n\n\tparameters:')
             print('\t\tfile - the configuration file to modify')
             print('\t\tsection - the section to modify denoted in the file by the name being enclosed')
             print('\t\t\tin square brackets.  If not specied then all occurances otf the key')
             print('\t\t\twill have their value set to the specified value')
             print('\t\tkey - the key name to be modified')
             print('\t\tvalue - the new value for the key')
+            print('\t\tBreak - the character used to separate key value pairs.  Default is the \'=\'')
             print()
             sys.exit(2)
     for opt, arg in opts:
@@ -70,7 +72,7 @@ def config(argv) -> int:
             else:
                 if working[0:1] == '[' and working[-1:] == ']':  # section found
                     if insection and not keyset:   # we are in the section, have found the start of a new section, and have not set the key yet, so it is a new key value pair
-                        lout(key+'='+value)
+                        lout(key+Break+value)
                         keyset = True
                     lout(line)
                     insection=False
@@ -78,7 +80,7 @@ def config(argv) -> int:
                         insection=True
                         sectionfound = True
                 else:
-                    if working.find('=') == 0: # not a key value pair
+                    if working.find(Break) == 0: # not a key value pair
                        lout(line)
                        pass
                     else:  # kvp, not a section
@@ -86,15 +88,15 @@ def config(argv) -> int:
                             lout(line)
                             pass
                         else:  # process the key value pair line
-                            if working[0:working.find('=')].upper() == key.upper():  # key found, set value
-                                lout(line[0:line.find('=')+1]+value)
+                            if working[0:working.find(Break)].upper() == key.upper():  # key found, set value
+                                lout(line[0:line.find(Break)+1]+value)
                                 keyset = True
                             else:
                                 lout(line)
         if section != '' and not sectionfound:   # we never found the section we are processing so, make it
             lout('['+section+']')
         if not keyset:  # we will get here if we have not set the key
-            lout(key+'='+value)
+            lout(key+Break+value)
             keyset = True
     if keyset:
         return 1

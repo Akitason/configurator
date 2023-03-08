@@ -1,5 +1,5 @@
 chmod o-rwx *
-chmod o-rwk.*
+chmod o-rwk .*
 chmod u+rw *
 chmod u+rw .*
 chmod g+rw *

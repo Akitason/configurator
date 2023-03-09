@@ -22,7 +22,7 @@ def config(argv) -> int:
     section = ''
     key=''
     value=''
-    Break='='
+    Break=' '
 
     try:
        opts, args = getopt.getopt(argv,"f:s:k:v:B:",["file=","section=","key=","value=","Break="])
@@ -38,7 +38,7 @@ def config(argv) -> int:
             print('\t\t\twill have their value set to the specified value')
             print('\t\tkey - the key name to be modified')
             print('\t\tvalue - the new value for the key')
-            print('\t\tBreak - the character used to separate key value pairs.  Default is the \'=\'')
+            print('\t\tBreak - the character used to separate key value pairs.  Default is a space')
             print()
             sys.exit(2)
     for opt, arg in opts:
@@ -53,6 +53,8 @@ def config(argv) -> int:
             key = arg
         elif opt in ("-v","--value"):
             value=arg
+        elif opt in ("-B","--Break"):
+            Break = arg 
     
     if fname=='' or key=='' or value=='':
         print (configlinehelptext)
